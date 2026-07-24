@@ -233,9 +233,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Project filter system
-  var filterBtns = document.querySelectorAll('.filter-btn');
-  var projectCards = document.querySelectorAll('.project-card');
-  var activeFilter = 'personal';
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+  let activeFilter = 'personal';
 
   // Hide non-matching cards immediately on load (no animation)
   projectCards.forEach(function (card) {
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   filterBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var filter = btn.getAttribute('data-filter');
+      const filter = btn.getAttribute('data-filter');
       if (filter === activeFilter) return;
       activeFilter = filter;
 
@@ -256,9 +256,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Fade out currently visible cards that don't match
       projectCards.forEach(function (card) {
-        var category = card.getAttribute('data-category');
-        var shouldShow = filter === 'all' || category === filter;
-        var isCurrentlyVisible = card.style.display !== 'none';
+        const category = card.getAttribute('data-category');
+        const shouldShow = filter === 'all' || category === filter;
+        const isCurrentlyVisible = card.style.display !== 'none';
 
         if (!shouldShow && isCurrentlyVisible) {
           card.style.opacity = '0';
@@ -270,8 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
       // After fade-out, hide them and reveal matching cards
       setTimeout(function () {
         projectCards.forEach(function (card) {
-          var category = card.getAttribute('data-category');
-          var shouldShow = filter === 'all' || category === filter;
+          const category = card.getAttribute('data-category');
+          const shouldShow = filter === 'all' || category === filter;
 
           if (!shouldShow) {
             card.style.display = 'none';
