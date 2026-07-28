@@ -30,7 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Typing effect
-  const words = ['modern web apps.', 'beautiful interfaces.', 'interactive experiences.', 'pixel-perfect designs.'];
+const words = [
+  "building websites that grow businesses.",
+  "creating fast, responsive web applications.",
+  "transforming ideas into real products.",
+  "crafting clean, intuitive interfaces.",
+  "turning designs into working code.",
+  "building products with attention to detail."
+];  
   let wordIndex = 0;
   let charIndex = 0;
   let isDeleting = false;

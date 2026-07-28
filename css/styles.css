@@ -17,7 +17,7 @@
 
   /* Neumorphism shadow system - dark mode */
   --shadow-light: rgba(255, 255, 255, 0.08);
-  --shadow-dark: rgba(0, 0, 0, 0.45);
+  --shadow-dark: rgba(133, 103, 182, 0.45);
   --shadow-raised:
     -12px -12px 28px var(--shadow-light),
     12px 12px 28px var(--shadow-dark);
@@ -118,14 +118,6 @@ body {
   66% { transform: translate(-1.5%, 1.5%) scale(0.98); }
 }
 
-.noise {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.02;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
 
 /* Neumorphic base utilities */
 .neu-raised {
@@ -172,7 +164,7 @@ nav {
 
 nav.scrolled {
   padding: 12px 5%;
-  background: rgba(11, 16, 32, 0.92);
+  background: rgba(0, 0, 0, 0.92);
 }
 
 [data-theme="light"] nav.scrolled {
@@ -180,8 +172,8 @@ nav.scrolled {
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -193,6 +185,7 @@ nav.scrolled {
   box-shadow: var(--shadow-soft);
   transition: all 0.3s ease;
   border: 1px solid var(--border-subtle);
+  overflow: hidden;
 }
 
 .logo:hover {
@@ -200,10 +193,23 @@ nav.scrolled {
   box-shadow: var(--shadow-raised), var(--glow-violet);
 }
 
-.logo img{
-  width: 50px;
-  height: 50px;
+[data-theme="dark"] .logo {
+  background: #f0f0f0;
+  box-shadow: -6px -6px 14px rgba(255, 255, 255, 0.08), 6px 6px 14px rgba(133, 103, 182, 0.45);
+}
+
+[data-theme="dark"] .logo img {
   border-radius: 50%;
+}
+[data-theme="dark"] ul{
+  background: #f0f0f0;
+ }
+.logo img{
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
 }
 .nav-links {
   display: flex;
@@ -257,6 +263,13 @@ nav.scrolled {
 .theme-toggle:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-raised), var(--glow-violet);
+  background: var(--gradient);
+  color: #fff;
+}
+
+.theme-toggle:hover .sun-icon,
+.theme-toggle:hover .moon-icon {
+  color: #fff !important;
 }
 
 .theme-toggle:active {
@@ -265,7 +278,8 @@ nav.scrolled {
 }
 
 .theme-toggle .sun-icon,
-.theme-toggle .moon-icon {
+.theme-toggle .moon-icon,
+.theme-toggle .pdf-icon {
   color: #4338ca !important;
   position: absolute;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -303,6 +317,46 @@ nav.scrolled {
   transition: all 0.3s ease;
 }
 
+.cv-link {
+  height: 30px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cv-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-raised), var(--glow-violet);
+  background: var(--gradient);
+  color: #fff;
+}
+
+.cv-link:active {
+  transform: translateY(-1px) scale(0.95);
+  box-shadow: var(--shadow-pressed);
+}
+
+[data-theme="dark"] .cv-link {
+  background: #f0f0f0;
+  color: #0B1020;
+}
+
+[data-theme="dark"] .cv-link:hover {
+  background: var(--gradient);
+  color: #fff;
+}
+
 .mobile-menu-btn:hover {
   box-shadow: var(--shadow-pressed);
 }
@@ -310,6 +364,21 @@ nav.scrolled {
 .mobile-menu-btn:active {
   box-shadow: var(--shadow-pressed);
   transform: scale(0.96);
+}
+
+[data-theme="dark"] .mobile-menu-btn {
+  background: #ffffff;
+  color: #0B1020;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: -6px -6px 14px rgba(255, 255, 255, 0.08), 6px 6px 14px rgba(133, 103, 182, 0.45);
+}
+
+[data-theme="dark"] .theme-toggle {
+  box-shadow: -6px -6px 14px rgba(255, 255, 255, 0.08), 6px 6px 14px rgba(133, 103, 182, 0.45);
+}
+
+[data-theme="dark"] .cv-link {
+  box-shadow: -6px -6px 14px rgba(255, 255, 255, 0.08), 6px 6px 14px rgba(133, 103, 182, 0.45);
 }
 
 /* Hero Section */
@@ -702,6 +771,7 @@ section {
   box-shadow:
     -12px -12px 28px rgba(255, 255, 255, 0.12),
     12px 12px 28px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
 }
 
 .about-image img {
@@ -709,6 +779,7 @@ section {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+  object-position: top center;
   background: var(--surface-light);
 }
 
