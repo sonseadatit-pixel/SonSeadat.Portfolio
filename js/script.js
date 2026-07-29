@@ -111,29 +111,6 @@ const words = [
     });
   }
 
-  // Skill bars animation
-  const skillBars = document.querySelectorAll('.skill-progress');
-  if ('IntersectionObserver' in window) {
-    const skillObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          const width = entry.target.getAttribute('data-width');
-          entry.target.style.width = width + '%';
-          skillObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    skillBars.forEach(function (bar) {
-      skillObserver.observe(bar);
-    });
-  } else {
-    skillBars.forEach(function (bar) {
-      const width = bar.getAttribute('data-width');
-      bar.style.width = width + '%';
-    });
-  }
-
   // 3D tilt effect on cards
   const tiltCards = document.querySelectorAll('.tilt-card');
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
@@ -298,6 +275,102 @@ const words = [
     });
   });
 
+  // Limit tech badges to 4 per card, show "+N more" badge
+  document.querySelectorAll('.project-card .project-tags').forEach(function (tagContainer) {
+    var tags = tagContainer.querySelectorAll('.project-tag');
+    if (tags.length > 4) {
+      for (var i = 4; i < tags.length; i++) {
+        tags[i].style.display = 'none';
+      }
+      var more = document.createElement('span');
+      more.className = 'project-tag-more';
+      more.textContent = '+' + (tags.length - 4) + ' more';
+      tagContainer.appendChild(more);
+    }
+  });
+
+  // Off-canvas project detail panel
+  var panelOverlay = document.getElementById('panelOverlay');
+  var projectPanel = document.getElementById('projectPanel');
+  var panelThumb = document.getElementById('panelThumb');
+  var panelTitle = document.getElementById('panelTitle');
+  var panelDesc = document.getElementById('panelDesc');
+  var panelTech = document.getElementById('panelTech');
+  var panelActions = document.getElementById('panelActions');
+
+  function openPanel(card) {
+    var img = card.querySelector('.project-preview img');
+    panelThumb.src = img.src;
+    panelThumb.alt = img.alt;
+    panelTitle.textContent = card.querySelector('.project-content h3').textContent;
+    panelDesc.textContent = card.getAttribute('data-full-desc');
+
+    var featuresStr = card.getAttribute('data-features');
+    var panelFeatures = document.getElementById('panelFeatures');
+    if (featuresStr) {
+      var items = featuresStr.split('|');
+      var ul = panelFeatures.querySelector('ul');
+      ul.innerHTML = '';
+      items.forEach(function (f) {
+        var li = document.createElement('li');
+        li.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + f.trim();
+        ul.appendChild(li);
+      });
+      panelFeatures.style.display = '';
+    } else {
+      panelFeatures.style.display = 'none';
+    }
+
+    var tags = card.querySelectorAll('.project-tags .project-tag');
+    panelTech.innerHTML = '';
+    tags.forEach(function (t) {
+      var clone = t.cloneNode(true);
+      clone.style.display = '';
+      panelTech.appendChild(clone);
+    });
+
+    var links = card.querySelectorAll('.project-links a.project-link');
+    panelActions.innerHTML = '';
+    links.forEach(function (l) {
+      var clone = l.cloneNode(true);
+      panelActions.appendChild(clone);
+    });
+
+    panelOverlay.classList.add('active');
+    projectPanel.classList.add('open');
+    document.body.classList.add('panel-open');
+  }
+
+  function closePanel() {
+    panelOverlay.classList.remove('active');
+    projectPanel.classList.remove('open');
+    document.body.classList.remove('panel-open');
+  }
+
+  document.querySelectorAll('.project-card').forEach(function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('a.project-link')) return;
+      openPanel(card);
+    });
+
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (e.target.closest('a.project-link')) return;
+        e.preventDefault();
+        openPanel(card);
+      }
+    });
+  });
+
+  panelOverlay.addEventListener('click', closePanel);
+  document.getElementById('panelClose').addEventListener('click', closePanel);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && projectPanel.classList.contains('open')) {
+      closePanel();
+    }
+  });
+
   // Scroll spy: update active nav link based on section in view
   if ('IntersectionObserver' in window) {
     const spyObserver = new IntersectionObserver(function (entries) {
@@ -315,4 +388,59 @@ const words = [
       spyObserver.observe(section);
     });
   }
+
+  // Email icon → scroll to contact
+  const emailLinks = document.querySelectorAll('.email-copy-trigger');
+
+  emailLinks.forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      var contactSection = document.getElementById('contact');
+      if (!contactSection) return;
+
+      // Force reveal elements active before scroll to avoid layout shift
+      contactSection.querySelectorAll('.reveal').forEach(function (el) {
+        el.classList.add('active');
+      });
+
+      // Small delay to let reveal styles settle, then scroll
+      setTimeout(function () {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+
+        // Wait for scroll + layout to finish
+        setTimeout(function () {
+          var nameInput = document.getElementById('name');
+          if (nameInput) {
+            nameInput.focus();
+            nameInput.classList.add('input-highlight');
+            setTimeout(function () {
+              nameInput.classList.remove('input-highlight');
+            }, 1500);
+          }
+
+          var form = document.getElementById('contactForm');
+          if (form) {
+            var existing = document.querySelector('.contact-toast');
+            if (existing) existing.remove();
+
+            var toast = document.createElement('div');
+            toast.className = 'contact-toast';
+            toast.textContent = '👋 Fill in your email below and I\'ll get back to you!';
+            document.getElementById('contact').appendChild(toast);
+
+            setTimeout(function () {
+              if (toast.parentNode) {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(function () {
+                  if (toast.parentNode) toast.remove();
+                }, 300);
+              }
+            }, 3500);
+          }
+        }, 200);
+      }, 20);
+    });
+  });
 });
